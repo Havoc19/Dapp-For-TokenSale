@@ -11,7 +11,7 @@ contract('Token',function(accounts){
             assert.equal(name, 'Earthen','Doesn\'t has the correct name');
             return tokenInstance.symbol();
         }).then(function(symbol){
-            assert.equal(symbol,'ERH','Doesn\'t have the correct symbol');
+            assert.equal(symbol,'ERT','Doesn\'t have the correct symbol');
             return tokenInstance.standard();
         }).then(function(standard){
             assert.equal(standard,'Earthen v1.0','Doesn\'t has the correct standard');
@@ -47,7 +47,20 @@ contract('Token',function(accounts){
         });
     });
 
-
+    it('approves tokens for delegated transfer',function(){
+        return Token.deployed().then(function(instance){
+            tokenInstance = instance;
+            return tokenInstance.approve.call(accounts[1],100);
+        }).then(function(success){
+            assert.equal(success,true,'must return true');
+            return tokenInstance.approve(accounts[1],100,{from : accounts[0] });
+        }).then(function(receipt){
+            assert.equal(receipt.logs.length, 1, 'triggers one event');
+            return tokenInstance.allowance(accounts[0],accounts[1]);
+        }).then(function(allowance){
+            assert.equal(allowance.toNumber(), 100, 'stores the allowance or delegated transfer');
+        });
+    });
 
 
 

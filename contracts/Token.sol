@@ -3,16 +3,24 @@ pragma solidity >=0.4.22 <0.9.0;
 contract Token{
 
     uint public totalSupply;
-    string public symbol = 'ERH';
+    string public symbol = 'ERT';
     string public name = 'Earthen';
     string public standard = 'Earthen v1.0';
     mapping(address => uint) public balanceOf;
+    mapping(address => mapping(address => uint)) public allowance;
     
     event Transfer(
         address indexed _from,
         address indexed _to,
         uint value
     );
+
+    event Approval(
+        address indexed _owner, 
+        address indexed _spender, 
+        uint256 _value
+    );
+
     constructor(uint _initialSupply) public{
         balanceOf[msg.sender] = _initialSupply;
         totalSupply = _initialSupply;
@@ -27,4 +35,12 @@ contract Token{
 
         return true;
     }
+
+    function approve(address _spender, uint _value) public returns (bool){
+
+        allowance[msg.sender][_spender] = _value;
+        emit Approval(msg.sender, _spender, _value);
+        return true;
+    }
+
 }
