@@ -3,7 +3,7 @@ import "./Token.sol";
 
 contract TokenSale{
 
-    address admin;
+    address payable admin;
     Token public tokenContract;
     uint public tokenPrice;
     uint public tokensSold;
@@ -31,4 +31,15 @@ contract TokenSale{
         tokensSold += _numberOfTokens;
         emit Sell(msg.sender, _numberOfTokens);
     }
+
+    function endSale() public{
+        require(msg.sender == admin);
+        require(tokenContract.transfer(admin, tokenContract.balanceOf(address(this))));
+
+        selfdestruct(admin);
+    }
+
+
+
+
 }
